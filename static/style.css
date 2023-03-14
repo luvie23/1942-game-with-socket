@@ -2,8 +2,11 @@ body{
     padding: 0;
     margin: 0;
     text-align: center;
-    padding-top: 200px;
+    padding-top: 50px;
 }
 
+a{
+    display: block;
+}
 
 

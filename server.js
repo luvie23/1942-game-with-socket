@@ -14,9 +14,6 @@ let enemies = [];
 let enemySpawn = 3;
 
 io.on('connection', function(socket){
-    socket.on('newConnection', function(){
-       
-    })
 
     socket.on('playerMovement', function(data){
         io.emit('updatePlayerPosition', data);
@@ -50,13 +47,3 @@ app.get('/', function(req, res){
     res.render('index');
 })
 
-
-// for(let i=0;i<this.bullets.length;i++){
-//     let bullet = this.bullets[i];
-//     bullet.y -= bullet.speed;
-//     if(bullet.y < 0){
-//         this.bullets.splice(i,1)
-//     }
-//     ctx.fillStyle = "red"
-//     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height)
-// }

@@ -16,10 +16,13 @@ playerSprite.src = '/sprites/player/player.png';
 const enemySprite = new Image();
 enemySprite.src = '/sprites/player/enemy.png';
 
+const bgImg = new Image();
+bgImg.src = '/sprites/player/bg.jpg';
 
 function game(){
     ctx.fillStyle = "black";
     ctx.fillRect(0,0, gameScreen.width, gameScreen.height)
+    ctx.drawImage(bgImg, 0, 0);
     
     socket.emit('playerMovement', player.draw());
     socket.on('updatePlayerPosition', function(data){
@@ -49,47 +52,30 @@ function game(){
     socket.on('drawEnemy', function(data){
         ctx.drawImage(enemySprite, data.x, data.y, data.width, data.height)
     })
-
-    // socket.on('updateEnemies', function(data){
-    //     let enemies = data.enemies;
-    //     let enemySpawn = data.enemySpawn
-    //     console.log(enemies.length)
-    //     console.log(enemySpawn)
-    //     if(enemies.length < enemySpawn){
-    //         let enemy = new Enemy(Math.floor(Math.random() * gameScreen.width - 60)+1, Math.floor(Math.random() * 50), Math.floor(Math.random() * 10)+1);
-            
-    //         enemies.push(enemy)
-    //         socket.emit('addEnemy', {enemies: enemies})
-    //     }
-    // })
-
-    // for(let i=0;i<player.bullets.length;i++){
-    //     let bulletX = player.bullets[i].x;
-    //     let bulletY = player.bullets[i].y;
-    //     for(let j=0;j<enemies.length;j++){
-    //         let enemy = enemies[j];
-    //         let bothX = bulletX - enemy.x;
-    //         if(bothX > 0 && bothX <50){
-    //             let bothY = bulletY - enemy.y
-    //             if(bothY > 0 && bothY <50){
-    //                 console.log('hit')
-    //                 player.bullets.splice(i,1);
-    //                 enemies.splice(j,1);
-    //             }
-    //         } 
-    //     }
-    // }
 }
 
-setInterval(game, 35)
+setInterval(game, 25)
 
-
-// for(let i=0;i<this.bullets.length;i++){
-//     let bullet = this.bullets[i];
-//     bullet.y -= bullet.speed;
-//     if(bullet.y < 0){
-//         this.bullets.splice(i,1)
-//     }
-//     ctx.fillStyle = "red"
-//     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height)
-// }
+function hitDetection(){
+    for(let i=0;i<player.bullets.length;i++){
+        let bulletX = player.bullets[i].x;
+        let bulletY = player.bullets[i].y;
+        let enemies =[]
+        socket.on('getEnemiesList', function(data){
+            enemies = data;
+            console.log(enemies)
+        })
+        for(let j=0;j<enemies.length;j++){
+            let enemy = enemies[j];
+            let bothX = bulletX - enemy.x;
+            if(bothX > 0 && bothX <50){
+                let bothY = bulletY - enemy.y
+                if(bothY > 0 && bothY <50){
+                    console.log('hit')
+                    player.bullets.splice(i,1);
+                    enemies.splice(j,1);
+                }
+            } 
+        }
+    }
+}
