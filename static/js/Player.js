@@ -5,8 +5,7 @@ export default class Player{
         this.speed = 5;
         this.width = 60;
         this.height = 30;
-        this.playerSprite = new Image();
-        this.playerSprite.src = '/sprites/player/player.png';
+
         this.bullets = [];
         this.bulletDelay = 1;
 
@@ -14,7 +13,7 @@ export default class Player{
         document.addEventListener("keyup", this.keyup);
     }
 
-    draw(ctx){
+    draw(){
         if(this.up && (this.y - this.speed) > 0){
             this.y -= this.speed;
         }
@@ -28,6 +27,11 @@ export default class Player{
             this.x -= this.speed;
         }
         
+        return {x: this.x, y: this.y, width: this.width, height: this.height}
+        // ctx.drawImage(this.playerSprite, this.x, this.y, this.width, this.height)
+    }
+
+    shootBullet(){
         if(this.bulletDelay > 0){
             this.bulletDelay--;
         }
@@ -37,18 +41,7 @@ export default class Player{
             this.bullets.push(bullet);
             this.v = false;
         }
-
-        for(let i=0;i<this.bullets.length;i++){
-            let bullet = this.bullets[i];
-            bullet.y -= bullet.speed;
-            if(bullet.y < 0){
-                this.bullets.splice(i,1)
-            }
-            ctx.fillStyle = "red"
-            ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height)
-        }
-
-        ctx.drawImage(this.playerSprite, this.x, this.y, this.width, this.height)
+        return this.bullets
     }
 
     keydown = (key) => {
