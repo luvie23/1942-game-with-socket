@@ -1,10 +1,14 @@
 export default class Player{
-    constructor(x,y){
+    constructor(x, y){
         this.x = x;
         this.y = y;
         this.speed = 5;
+        this.width = 60;
+        this.height = 30;
         this.playerSprite = new Image();
         this.playerSprite.src = '/sprites/player/player.png';
+        this.bullets = [];
+        this.bulletDelay = 1;
 
         document.addEventListener("keydown", this.keydown);
         document.addEventListener("keyup", this.keyup);
@@ -23,7 +27,28 @@ export default class Player{
         if(this.left && (this.x - this.speed) > 0){
             this.x -= this.speed;
         }
-        ctx.drawImage(this.playerSprite, this.x, this.y,60,30)
+        
+        if(this.bulletDelay > 0){
+            this.bulletDelay--;
+        }
+
+        let bullet = {speed: 6, x: this.x + this.width/2, y: this.y, width: 5, height: 10, interval: 1000}
+        if(this.v){
+            this.bullets.push(bullet);
+            this.v = false;
+        }
+
+        for(let i=0;i<this.bullets.length;i++){
+            let bullet = this.bullets[i];
+            bullet.y -= bullet.speed;
+            if(bullet.y < 0){
+                this.bullets.splice(i,1)
+            }
+            ctx.fillStyle = "red"
+            ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height)
+        }
+
+        ctx.drawImage(this.playerSprite, this.x, this.y, this.width, this.height)
     }
 
     keydown = (key) => {
@@ -40,8 +65,12 @@ export default class Player{
             this.left = true;
         }
 
-        if(key.code === "Space"){
-            this.space = true;
+        if(key.code === "KeyV"){
+            if(this.bulletDelay == 0){ 
+                this.v = true;
+                this.bulletDelay = 10
+            }
+
         }
     }
 
@@ -58,8 +87,8 @@ export default class Player{
         if(key.code === "ArrowLeft"){
             this.left = false;
         }
-        if(key.code === "Space"){
-            this.space = false;
+        if(key.code === "KeyV"){
+            this.v = false;
         }
     }
 
